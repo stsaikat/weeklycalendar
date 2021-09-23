@@ -10,16 +10,20 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Calendar">
         <activity
-            android:name=".screen.LogInActivity"
-            android:exported="true" />
-        <activity
-            android:name=".screen.MainActivity"
-            android:exported="true">
+            android:name=".screen.login.LogInActivity"
+            android:exported="true" >
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+        </activity>
+        <activity
+            android:name=".screen.main.MainActivity"
+            android:exported="true">
+
         </activity>
     </application>
 
