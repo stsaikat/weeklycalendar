@@ -4,11 +4,15 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.example.calendar.datamodel.User
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 
 class LogInViewModel(private val app: Application) : AndroidViewModel(app) {
 
     val user: MutableLiveData<User?> = MutableLiveData(null)
     val toastMessage: MutableLiveData<String?> = MutableLiveData(null)
+
+    private val auth = Firebase.auth
 
     fun logIn(username: String?, password: String?){
         if(
@@ -18,7 +22,24 @@ class LogInViewModel(private val app: Application) : AndroidViewModel(app) {
             toastMessage.postValue("Please enter valid username and password")
             return
         }
-        // TODO: 24/09/2021  
+        // TODO: 24/09/2021
+
+        auth.signInWithEmailAndPassword(
+            "$username@calendar.com",
+            password
+        )
+            .addOnCompleteListener { task ->
+                if(task.isSuccessful){
+                    auth.currentUser?.let {
+                        user.postValue(User(it.uid))
+                    }
+                }
+                else {
+                    toastMessage.postValue(
+                        "check network or invalid username or password"
+                    )
+                }
+            }
     }
 
     fun signUp(username: String?,password: String?){
@@ -33,7 +54,23 @@ class LogInViewModel(private val app: Application) : AndroidViewModel(app) {
             return
         }
 
-        // TODO: 24/09/2021  
+        // TODO: 24/09/2021
+        auth.createUserWithEmailAndPassword(
+            "$username@calendar.com",
+            password
+        )
+            .addOnCompleteListener { task ->
+                if(task.isSuccessful){
+                    auth.currentUser?.let {
+                        user.postValue(User(it.uid))
+                    }
+                }
+                else{
+                    toastMessage.postValue(
+                        "Please check network or username not available"
+                    )
+                }
+            }
     }
     
     private fun validateUserName(username: String?) : Boolean {

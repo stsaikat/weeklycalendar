@@ -1,5 +1,6 @@
 package com.example.calendar.screen.login
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -8,7 +9,13 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.activity.viewModels
 import com.example.calendar.R
+import com.example.calendar.common.AppConsts
 import com.example.calendar.databinding.ActivityLogInBinding
+import com.example.calendar.datamodel.User
+import com.example.calendar.screen.main.MainActivity
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
+import com.google.gson.Gson
 
 class LogInActivity : AppCompatActivity() {
 
@@ -21,6 +28,14 @@ class LogInActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityLogInBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // auto log in
+        Firebase.auth.currentUser?.let {
+            viewModel.user.postValue(
+                User(it.uid)
+            )
+        }
+        // -----------
         
         viewModel.toastMessage.observe(this,{
             it?.let { 
@@ -30,8 +45,12 @@ class LogInActivity : AppCompatActivity() {
         })
         
         viewModel.user.observe(this,{
-            it?.let {
-                // TODO: 24/09/2021  
+            it?.let { user ->
+                startActivity(
+                    Intent(this,MainActivity::class.java).apply {
+                        putExtra(AppConsts.USER, Gson().toJson(user))
+                    }
+                )
             }
         })
     }
