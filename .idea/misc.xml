@@ -3,8 +3,12 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/main/res/drawable/ic_plus_simple_white.xml" value="0.18888888888888888" />
         <entry key="app/src/main/res/layout/activity_log_in.xml" value="0.25" />
-        <entry key="app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.22" />
+        <entry key="app/src/main/res/layout/create_event_dialog_layout.xml" value="0.22" />
+        <entry key="app/src/main/res/layout/list_item.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/single_day.xml" value="0.22" />
       </map>
     </option>
   </component>
