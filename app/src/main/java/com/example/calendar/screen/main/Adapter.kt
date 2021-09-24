@@ -12,6 +12,7 @@ class Adapter(var list: ArrayList<Event>) : RecyclerView.Adapter<Adapter.ViewHol
 
     fun setNewDataSet(l: ArrayList<Event>){
         list = l
+        notifyDataSetChanged()
     }
 
     inner class ViewHolder(item: View) : RecyclerView.ViewHolder(item){

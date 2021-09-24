@@ -51,6 +51,7 @@ class LogInActivity : AppCompatActivity() {
                         putExtra(AppConsts.USER, Gson().toJson(user))
                     }
                 )
+                finish()
             }
         })
     }

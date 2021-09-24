@@ -1,16 +1,12 @@
 package com.example.calendar.screen.main
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.Button
 import android.widget.Toast
 import androidx.activity.viewModels
-import com.example.calendar.R
+import androidx.appcompat.app.AppCompatActivity
 import com.example.calendar.common.AppConsts
-import com.example.calendar.common.getCreateEventDialog
 import com.example.calendar.common.getTotalDayInMonth
-import com.example.calendar.databinding.ActivityLogInBinding
 import com.example.calendar.databinding.ActivityMainBinding
 import com.example.calendar.databinding.CreateEventDialogLayoutBinding
 import com.example.calendar.datamodel.Event
@@ -19,6 +15,8 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.Gson
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var mToast: Toast
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var dialogBinding: CreateEventDialogLayoutBinding
@@ -39,6 +37,13 @@ class MainActivity : AppCompatActivity() {
         )
 
         setDate()
+
+        viewModel.toastMessage.observe(this,{
+            it?.let {
+                viewModel.toastMessage.postValue(null)
+                showToast(it)
+            }
+        })
 
         val firstAdapter = Adapter(ArrayList())
         val secondAdapter = Adapter(ArrayList())
@@ -81,13 +86,13 @@ class MainActivity : AppCompatActivity() {
         setAddButtons()
 
         binding.next.setOnClickListener {
-            viewModel.startDate += 7
+            viewModel.startDate = getNextWeekStartDate(viewModel.startDate)
             setDate()
             viewModel.loadData()
         }
 
         binding.prev.setOnClickListener {
-            viewModel.startDate -= 7
+            viewModel.startDate = getPrevWeekStartDate(viewModel.startDate)
             setDate()
             viewModel.loadData()
         }
@@ -274,5 +279,31 @@ class MainActivity : AppCompatActivity() {
         binding.fifth.date.text = ((day+4)%dayInMonth + 1).toString()
         binding.sixth.date.text = ((day+5)%dayInMonth + 1).toString()
         binding.seventh.date.text = ((day+6)%dayInMonth + 1).toString()
+    }
+
+    private fun getNextWeekStartDate(date: Int) : Int{
+        val daysInMonth = getTotalDayInMonth((date/100)%100)
+        var day = (date%100) + 7
+
+        return if(day > daysInMonth){
+            (date/100 + 1) * 100 + day%daysInMonth
+        }
+        else date + 7
+    }
+
+    private fun getPrevWeekStartDate(date: Int) : Int{
+        val daysInPrevMonth = getTotalDayInMonth((date/100)%100 - 1)
+        var day = (date%100) - 7
+
+        return if(day < 1){
+            (date/100 - 1) * 100 + daysInPrevMonth+day
+        }
+        else date - 7
+    }
+
+    private fun showToast(message: String){
+        if(this::mToast.isInitialized) mToast.cancel()
+        mToast = Toast.makeText(this,message, Toast.LENGTH_LONG)
+        mToast.show()
     }
 }
