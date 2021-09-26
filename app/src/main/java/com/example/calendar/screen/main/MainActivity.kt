@@ -1,17 +1,25 @@
 package com.example.calendar.screen.main
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import com.example.calendar.R
 import com.example.calendar.common.AppConsts
 import com.example.calendar.common.getTotalDayInMonth
 import com.example.calendar.databinding.ActivityMainBinding
 import com.example.calendar.databinding.CreateEventDialogLayoutBinding
 import com.example.calendar.datamodel.Event
 import com.example.calendar.datamodel.User
+import com.example.calendar.screen.login.LogInActivity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.google.gson.Gson
 import java.text.SimpleDateFormat
 import java.util.*
@@ -41,6 +49,8 @@ class MainActivity : AppCompatActivity(),MainAdapter.OnItemClick {
             SimpleDateFormat("yyyyMMdd").format(Calendar.getInstance().time).toInt()
         )
 
+        showLoadingView()
+
         viewModel.toastMessage.observe(this,{
             it?.let {
                 viewModel.toastMessage.postValue(null)
@@ -49,12 +59,14 @@ class MainActivity : AppCompatActivity(),MainAdapter.OnItemClick {
         })
 
         binding.next.setOnClickListener {
+            showLoadingView()
             viewModel.newStartDate(
                 getNextWeekStartDate(viewModel.startDate)
             )
         }
 
         binding.prev.setOnClickListener {
+            showLoadingView()
             viewModel.newStartDate(
                 getPrevWeekStartDate(viewModel.startDate)
             )
@@ -72,8 +84,41 @@ class MainActivity : AppCompatActivity(),MainAdapter.OnItemClick {
                     binding.tvMonthYear.text = it
                 }
                 adapter.updateData(it)
+                hideLoadingView()
             }
         })
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.main,menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId){
+            R.id.signout -> {
+                Firebase.auth.signOut()
+                startActivity(
+                    Intent(this,LogInActivity::class.java)
+                )
+                finish()
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun showLoadingView(){
+        binding.rvMain.visibility = View.INVISIBLE
+        binding.prev.isEnabled = false
+        binding.next.isEnabled = false
+        binding.pbMainLoading.visibility = View.VISIBLE
+    }
+
+    private fun hideLoadingView(){
+        binding.rvMain.visibility = View.VISIBLE
+        binding.prev.isEnabled = true
+        binding.next.isEnabled = true
+        binding.pbMainLoading.visibility = View.INVISIBLE
     }
 
     private fun getNextWeekStartDate(date: Int) : Int{
