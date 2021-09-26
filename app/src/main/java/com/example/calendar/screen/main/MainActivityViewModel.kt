@@ -12,25 +12,31 @@ import com.example.calendar.datamodel.User
 import com.example.calendar.repository.EventRepo
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
 class MainActivityViewModel(val app: Application) : AndroidViewModel(app), EventRepo.Update {
 
-    val eventRepo = EventRepo(
+    private val eventRepo = EventRepo(
         User(
             Firebase.auth.uid.toString()
         ), this
     )
 
-    val firstList: MutableLiveData<ArrayList<Event>> = MutableLiveData(ArrayList())
+    private var dataloaderArray:ArrayList<DateEvents> = ArrayList()
+    val data: MutableLiveData<ArrayList<DateEvents>?> = MutableLiveData(null)
+
+/*    val firstList: MutableLiveData<ArrayList<Event>> = MutableLiveData(ArrayList())
     val secondList: MutableLiveData<ArrayList<Event>> = MutableLiveData(ArrayList())
     val thirdList: MutableLiveData<ArrayList<Event>> = MutableLiveData(ArrayList())
     val fourthList: MutableLiveData<ArrayList<Event>> = MutableLiveData(ArrayList())
     val fifthList: MutableLiveData<ArrayList<Event>> = MutableLiveData(ArrayList())
     val sixthList: MutableLiveData<ArrayList<Event>> = MutableLiveData(ArrayList())
-    val seventhList: MutableLiveData<ArrayList<Event>> = MutableLiveData(ArrayList())
+    val seventhList: MutableLiveData<ArrayList<Event>> = MutableLiveData(ArrayList())*/
 
     val toastMessage: MutableLiveData<String?> = MutableLiveData(null)
 
@@ -38,11 +44,26 @@ class MainActivityViewModel(val app: Application) : AndroidViewModel(app), Event
     @SuppressLint("SimpleDateFormat")
     var startDate = SimpleDateFormat("yyyyMMdd").format(Calendar.getInstance().time).toInt()
 
+    fun newStartDate(date: Int){
+        startDate = date
+        loadData()
+    }
+
     fun addEvent(event: Event,date: Int){
 
         eventRepo.addEvent(event)
 
-        val currentMonthDay = getTotalDayInMonth((date/100)%100)
+        data.value?.let {
+            dataloaderArray = it
+            dataloaderArray.forEach { dateEvents ->
+                if (dateEvents.date == date){
+                    dateEvents.events.add(event)
+                    return@forEach
+                }
+            }
+        }
+
+        /*val currentMonthDay = getTotalDayInMonth((date/100)%100)
         val startDateMonthDay = getTotalDayInMonth((startDate/100)%100)
         val serial = if(currentMonthDay == startDateMonthDay) date - startDate
                      else{
@@ -94,28 +115,25 @@ class MainActivityViewModel(val app: Application) : AndroidViewModel(app), Event
                     seventhList.postValue(it)
                 }
             }
-        }
+        }*/
     }
 
-    fun loadData(){
-        firstList.postValue(ArrayList())
-        secondList.postValue(ArrayList())
-        thirdList.postValue(ArrayList())
-        fourthList.postValue(ArrayList())
-        fifthList.postValue(ArrayList())
-        sixthList.postValue(ArrayList())
-        seventhList.postValue(ArrayList())
+    private fun loadData(){
+        dataloaderArray.clear()
 
         val daysInMonth = getTotalDayInMonth((startDate/100)%100)
+        Log.d(TAG, "loadData: days = $daysInMonth || $startDate")
         val day = (startDate%100)
-        for (i in 0..7){
+        for (i in 0..6){
             val newDay = day + i
             val newDate = if(newDay > daysInMonth){
-                ((startDate/100) + 1)*100 + newDay%(daysInMonth+1) + 1
+                ((startDate/100) + 1)*100 + newDay - daysInMonth
             }
             else {
-                eventRepo.getEventList(startDate+i)
+                startDate + i
             }
+            Log.d("abc", "$i , loadData: $newDate")
+            eventRepo.getEventList(newDate)
         }
     }
 
@@ -124,22 +142,19 @@ class MainActivityViewModel(val app: Application) : AndroidViewModel(app), Event
     }
 
     override fun events(dateEvents: DateEvents) {
-        val currentMonthDay = getTotalDayInMonth((dateEvents.date/100)%100)
-        val startDateMonthDay = getTotalDayInMonth((startDate/100)%100)
-        val serial = if(currentMonthDay == startDateMonthDay) dateEvents.date - startDate
-        else{
-            startDateMonthDay - ((startDate%100)%startDateMonthDay)
-            (dateEvents.date%100)%currentMonthDay
-        }
 
-        when(serial){
-            0 -> firstList.postValue(dateEvents.events)
-            1 -> secondList.postValue(dateEvents.events)
-            2 -> thirdList.postValue(dateEvents.events)
-            2+1 -> fourthList.postValue(dateEvents.events)
-            4 -> fifthList.postValue(dateEvents.events)
-            5 -> sixthList.postValue(dateEvents.events)
-            6 -> seventhList.postValue(dateEvents.events)
+        Log.d("abc", "eventsv: $dateEvents")
+
+        dataloaderArray.add(dateEvents)
+        if(dataloaderArray.size == 7){
+            dataloaderArray.sortBy {
+                it.date
+            }
+            data.postValue(dataloaderArray)
         }
+    }
+
+    companion object {
+        const val TAG = "xyz"
     }
 }

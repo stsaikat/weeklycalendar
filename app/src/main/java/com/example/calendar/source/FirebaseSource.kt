@@ -36,16 +36,28 @@ class FirebaseSource(private val user: User,val listener: Update) {
     }
 
     fun getEvents(date: Int){
+        Log.d("TAG", "getEvents: fb called $date")
         database.document("$date")
             .get()
-            .addOnSuccessListener {
+            .addOnCompleteListener {
+                var data = DateEvents(date)
+                if(it.isSuccessful){
+                    val dateEvents = it.result.toObject(DateEvents::class.java)
+                    if (dateEvents != null) {
+                        data = dateEvents
+                    }
+                }
+                listener.events(data)
+            }
+/*            .addOnSuccessListener {
                 val dateEvents = it.toObject(DateEvents::class.java)
                 if (dateEvents != null) {
                     listener.events(dateEvents)
                 }
             }
             .addOnFailureListener {
-
-            }
+                // TODO: 26/09/2021
+                listener.events(DateEvents(date))
+            }*/
     }
 }

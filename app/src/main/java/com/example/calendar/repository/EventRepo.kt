@@ -1,5 +1,6 @@
 package com.example.calendar.repository
 
+import android.util.Log
 import com.example.calendar.datamodel.DateEvents
 import com.example.calendar.datamodel.Event
 import com.example.calendar.datamodel.User
@@ -27,6 +28,7 @@ class EventRepo(private val user: User, val listener: Update) : FirebaseSource.U
     }
 
     override fun events(dateEvents: DateEvents) {
+        Log.d("xyz", "events: $dateEvents")
         listener.events(dateEvents)
     }
 }

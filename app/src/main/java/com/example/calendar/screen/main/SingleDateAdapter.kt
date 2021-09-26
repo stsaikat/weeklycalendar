@@ -8,12 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.calendar.R
 import com.example.calendar.datamodel.Event
 
-class Adapter(var list: ArrayList<Event>) : RecyclerView.Adapter<Adapter.ViewHolder>() {
-
-    fun setNewDataSet(l: ArrayList<Event>){
-        list = l
-        notifyDataSetChanged()
-    }
+class SingleDateAdapter(var list: ArrayList<Event>) : RecyclerView.Adapter<SingleDateAdapter.ViewHolder>() {
 
     inner class ViewHolder(item: View) : RecyclerView.ViewHolder(item){
         val title: TextView = item.findViewById(R.id.tv_title)
