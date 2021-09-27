@@ -92,10 +92,13 @@ class MainActivity : AppCompatActivity(), MainAdapter.OnItemClick {
 
         viewModel.data.observe(this,{
             it?.let {
-                val date = viewModel.startDate
-                "${getMonthName((date/100)%100)},${date/10000}".also {
+                var s = "${it[0].date%100},${getMonthName((it[0].date/100)%100)}"
+                s += " - "
+                s += "${it[6].date%100},${getMonthName((it[6].date/100)%100)}"
+/*                "${getMonthName((date/100)%100)},${date/10000}".also {
                     binding.tvMonthYear.text = it
-                }
+                }*/
+                binding.tvMonthYear.text = s
                 adapter.updateData(it)
                 hideLoadingView()
             }
@@ -202,6 +205,8 @@ class MainActivity : AppCompatActivity(), MainAdapter.OnItemClick {
 
         dialogBinding.ok.setOnClickListener {
             dialog.dismiss()
+            event.title = dialogBinding.etTitle.text.toString()
+            event.note = dialogBinding.etNote.text.toString()
             event.logs.add("Edited at ${SimpleDateFormat("yyyyMMdd hh:mm:ss").format(Calendar.getInstance().time)}")
             viewModel.editEvent(event)
         }

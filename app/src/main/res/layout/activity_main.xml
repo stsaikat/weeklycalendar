@@ -10,6 +10,7 @@
         android:id="@+id/next"
         android:layout_width="120dp"
         android:layout_height="48dp"
+        android:layout_marginTop="8dp"
         android:background="@android:color/transparent"
         android:text="Next"
         android:textColor="@android:color/black"
@@ -25,6 +26,7 @@
         android:id="@+id/prev"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:background="@android:color/transparent"
         android:text="Previous"
         android:textColor="@android:color/black"
@@ -39,7 +41,7 @@
         android:id="@+id/rv_main"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -51,12 +53,12 @@
         android:id="@+id/tv_month_year"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:textSize="20sp"
+        android:textSize="12sp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/next"
         app:layout_constraintEnd_toStartOf="@+id/next"
         app:layout_constraintStart_toEndOf="@+id/prev"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/next" />
 
     <ProgressBar
         android:id="@+id/pb_main_loading"
