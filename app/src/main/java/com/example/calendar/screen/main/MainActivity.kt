@@ -92,9 +92,9 @@ class MainActivity : AppCompatActivity(), MainAdapter.OnItemClick {
 
         viewModel.data.observe(this,{
             it?.let {
-                var s = "${it[0].date%100},${getMonthName((it[0].date/100)%100)}"
+                var s = "${it[0].date%100} ${getMonthName((it[0].date/100)%100)}"
                 s += " - "
-                s += "${it[6].date%100},${getMonthName((it[6].date/100)%100)}"
+                s += "${it[6].date%100} ${getMonthName((it[6].date/100)%100)}"
 /*                "${getMonthName((date/100)%100)},${date/10000}".also {
                     binding.tvMonthYear.text = it
                 }*/
@@ -177,7 +177,7 @@ class MainActivity : AppCompatActivity(), MainAdapter.OnItemClick {
                     date,
                     System.currentTimeMillis().toString(),
                     dialogBinding.etNote.text.toString(),
-                    arrayListOf("Created at ${SimpleDateFormat("yyyyMMdd hh:mm:ss").format(Calendar.getInstance().time)}")
+                    arrayListOf("Created at ${SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(Calendar.getInstance().time)}")
                 ),
                 date
             )
@@ -207,7 +207,7 @@ class MainActivity : AppCompatActivity(), MainAdapter.OnItemClick {
             dialog.dismiss()
             event.title = dialogBinding.etTitle.text.toString()
             event.note = dialogBinding.etNote.text.toString()
-            event.logs.add("Edited at ${SimpleDateFormat("yyyyMMdd hh:mm:ss").format(Calendar.getInstance().time)}")
+            event.logs.add("Edited at ${SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(Calendar.getInstance().time)}")
             viewModel.editEvent(event)
         }
 

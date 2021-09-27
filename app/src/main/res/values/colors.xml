@@ -9,4 +9,6 @@
     <color name="white">#FFFFFFFF</color>
 
     <color name="grey">#25000000</color>
+
+    <color name="mate_blue">#FF1A8CFF</color>
 </resources>
