@@ -1,5 +1,6 @@
 package com.example.calendar.screen.login
 
+import android.content.DialogInterface
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -13,6 +14,7 @@ import com.example.calendar.common.AppConsts
 import com.example.calendar.databinding.ActivityLogInBinding
 import com.example.calendar.datamodel.User
 import com.example.calendar.screen.main.MainActivity
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.google.gson.Gson
@@ -38,15 +40,27 @@ class LogInActivity : AppCompatActivity() {
         // -----------*/
         
         viewModel.toastMessage.observe(this,{
-            binding.pbLoadingUser.visibility = View.GONE
+            showResultView()
             it?.let { 
                 viewModel.toastMessage.postValue(null)
                 showToast(it)
             }
         })
+
+        viewModel.dialogText.observe(this,{
+            showResultView()
+            it?.let {
+                viewModel.dialogText.postValue(null)
+                MaterialAlertDialogBuilder(this)
+                    .setTitle("Help Text")
+                    .setMessage("$it")
+                    .setPositiveButton("ok",null)
+                    .show()
+            }
+        })
         
         viewModel.user.observe(this,{
-            binding.pbLoadingUser.visibility = View.GONE
+            showResultView()
             it?.let { user ->
                 startActivity(
                     Intent(this,MainActivity::class.java).apply {
@@ -58,15 +72,27 @@ class LogInActivity : AppCompatActivity() {
         })
     }
 
-    fun onSignUpClick(view: View){
+    private fun showLoadingView(){
         binding.pbLoadingUser.visibility = View.VISIBLE
+        binding.btSignUp.isEnabled = false
+        binding.btLogIn.isEnabled = false
+    }
+
+    private fun showResultView(){
+        binding.pbLoadingUser.visibility = View.GONE
+        binding.btSignUp.isEnabled = true
+        binding.btLogIn.isEnabled = true
+    }
+
+    fun onSignUpClick(view: View){
+        showLoadingView()
         val username = binding.etUsername.text.toString()
         val password = binding.etPassword.text.toString()
         viewModel.signUp(username,password)
     }
 
     fun onLogInClick(view: View){
-        binding.pbLoadingUser.visibility = View.VISIBLE
+        showLoadingView()
         val username = binding.etUsername.text.toString()
         val password = binding.etPassword.text.toString()
         viewModel.logIn(username,password)
