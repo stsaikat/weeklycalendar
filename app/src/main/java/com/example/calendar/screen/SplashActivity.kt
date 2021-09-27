@@ -21,6 +21,8 @@ class SplashActivity : AppCompatActivity() {
         binding = ActivitySplashBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        supportActionBar?.hide()
+
         val auth = Firebase.auth
 
         binding.logo.alpha = 0f

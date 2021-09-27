@@ -8,9 +8,16 @@
 
     <Button
         android:id="@+id/next"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="120dp"
+        android:layout_height="48dp"
+        android:background="@android:color/transparent"
         android:text="Next"
+        android:textColor="@android:color/black"
+        app:icon="@drawable/right_arrow"
+        app:iconGravity="end"
+        app:iconPadding="8dp"
+        app:iconSize="20dp"
+        app:iconTint="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -18,7 +25,13 @@
         android:id="@+id/prev"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
         android:text="Previous"
+        android:textColor="@android:color/black"
+        app:icon="@drawable/left_arrow"
+        app:iconGravity="start"
+        app:iconSize="20dp"
+        app:iconTint="@color/black"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -26,6 +39,7 @@
         android:id="@+id/rv_main"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginTop="16dp"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

@@ -2,13 +2,15 @@ package com.example.calendar.screen.main
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.GridLayout
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.calendar.R
 import com.example.calendar.common.AppConsts
 import com.example.calendar.common.getTotalDayInMonth
@@ -17,6 +19,7 @@ import com.example.calendar.databinding.CreateEventDialogLayoutBinding
 import com.example.calendar.datamodel.Event
 import com.example.calendar.datamodel.User
 import com.example.calendar.screen.login.LogInActivity
+import com.example.calendar.screen.main.eventadapter.MainAdapter
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -25,7 +28,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
-class MainActivity : AppCompatActivity(),MainAdapter.OnItemClick {
+class MainActivity : AppCompatActivity(), MainAdapter.OnItemClick {
 
     private lateinit var mToast: Toast
 
@@ -73,9 +76,15 @@ class MainActivity : AppCompatActivity(),MainAdapter.OnItemClick {
             viewModel.startDate = getPrevWeekStartDate(viewModel.startDate)
         }
 
+        val gridLayoutManager = object : GridLayoutManager(this,7){
+            override fun canScrollVertically() : Boolean {
+                return false
+            }
+        }
 
         val adapter = MainAdapter(this,ArrayList())
         binding.rvMain.adapter = adapter
+        binding.rvMain.layoutManager = gridLayoutManager
 
         viewModel.data.observe(this,{
             it?.let {

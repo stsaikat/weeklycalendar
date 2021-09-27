@@ -1,4 +1,4 @@
-package com.example.calendar.screen.main
+package com.example.calendar.screen.main.eventadapter
 
 import android.view.LayoutInflater
 import android.view.View

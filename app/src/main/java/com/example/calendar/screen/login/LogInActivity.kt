@@ -38,6 +38,7 @@ class LogInActivity : AppCompatActivity() {
         // -----------*/
         
         viewModel.toastMessage.observe(this,{
+            binding.pbLoadingUser.visibility = View.GONE
             it?.let { 
                 viewModel.toastMessage.postValue(null)
                 showToast(it)
@@ -45,6 +46,7 @@ class LogInActivity : AppCompatActivity() {
         })
         
         viewModel.user.observe(this,{
+            binding.pbLoadingUser.visibility = View.GONE
             it?.let { user ->
                 startActivity(
                     Intent(this,MainActivity::class.java).apply {
@@ -57,12 +59,14 @@ class LogInActivity : AppCompatActivity() {
     }
 
     fun onSignUpClick(view: View){
+        binding.pbLoadingUser.visibility = View.VISIBLE
         val username = binding.etUsername.text.toString()
         val password = binding.etPassword.text.toString()
         viewModel.signUp(username,password)
     }
 
     fun onLogInClick(view: View){
+        binding.pbLoadingUser.visibility = View.VISIBLE
         val username = binding.etUsername.text.toString()
         val password = binding.etPassword.text.toString()
         viewModel.logIn(username,password)

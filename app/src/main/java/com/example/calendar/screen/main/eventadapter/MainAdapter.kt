@@ -1,4 +1,4 @@
-package com.example.calendar.screen.main
+package com.example.calendar.screen.main.eventadapter
 
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,10 +9,9 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.calendar.R
 import com.example.calendar.datamodel.DateEvents
-import java.util.*
 import kotlin.collections.ArrayList
 
-class MainAdapter(val listener: OnItemClick,private var list: ArrayList<DateEvents>) : RecyclerView.Adapter<MainAdapter.ViewHolder>() {
+class MainAdapter(val listener: OnItemClick, private var list: ArrayList<DateEvents>) : RecyclerView.Adapter<MainAdapter.ViewHolder>() {
 
     interface OnItemClick{
         fun onCreateClick(date: Int)
