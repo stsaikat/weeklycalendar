@@ -16,9 +16,11 @@ import com.example.calendar.common.AppConsts
 import com.example.calendar.common.getTotalDayInMonth
 import com.example.calendar.databinding.ActivityMainBinding
 import com.example.calendar.databinding.CreateEventDialogLayoutBinding
+import com.example.calendar.databinding.EditEventDialogLayoutBinding
 import com.example.calendar.datamodel.Event
 import com.example.calendar.datamodel.User
 import com.example.calendar.screen.login.LogInActivity
+import com.example.calendar.screen.main.eventadapter.LogAdapter
 import com.example.calendar.screen.main.eventadapter.MainAdapter
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.ktx.auth
@@ -76,8 +78,10 @@ class MainActivity : AppCompatActivity(), MainAdapter.OnItemClick {
             viewModel.startDate = getPrevWeekStartDate(viewModel.startDate)
         }
 
-        val gridLayoutManager = object : GridLayoutManager(this,7){
-            override fun canScrollVertically() : Boolean {
+        val gridLayoutManager = object : GridLayoutManager(
+            this,7,HORIZONTAL,false
+        ){
+            override fun canScrollHorizontally() : Boolean {
                 return false
             }
         }
@@ -169,10 +173,37 @@ class MainActivity : AppCompatActivity(), MainAdapter.OnItemClick {
                     dialogBinding.etTitle.text.toString(),
                     date,
                     System.currentTimeMillis().toString(),
-                    dialogBinding.etNote.text.toString()
+                    dialogBinding.etNote.text.toString(),
+                    arrayListOf("Created at ${SimpleDateFormat("yyyyMMdd hh:mm:ss").format(Calendar.getInstance().time)}")
                 ),
                 date
             )
+        }
+
+        dialogBinding.cancel.setOnClickListener {
+            dialog.dismiss()
+        }
+    }
+
+    override fun itemClicked(event: Event) {
+        val dialogBinding = EditEventDialogLayoutBinding.inflate(layoutInflater)
+        val dialog = MaterialAlertDialogBuilder(this)
+            .setView(dialogBinding.root)
+            .show()
+
+        dialogBinding.etTitle.setText(event.title)
+        dialogBinding.etNote.setText(event.note)
+        dialogBinding.rvLogs.adapter = LogAdapter(event.logs)
+
+        dialogBinding.delete.setOnClickListener {
+            dialog.dismiss()
+            viewModel.deleteEvent(event)
+        }
+
+        dialogBinding.ok.setOnClickListener {
+            dialog.dismiss()
+            event.logs.add("Edited at ${SimpleDateFormat("yyyyMMdd hh:mm:ss").format(Calendar.getInstance().time)}")
+            viewModel.editEvent(event)
         }
 
         dialogBinding.cancel.setOnClickListener {

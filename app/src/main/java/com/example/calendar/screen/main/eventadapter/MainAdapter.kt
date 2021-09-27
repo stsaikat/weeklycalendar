@@ -9,12 +9,16 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.calendar.R
 import com.example.calendar.datamodel.DateEvents
+import com.example.calendar.datamodel.Event
 import kotlin.collections.ArrayList
 
-class MainAdapter(val listener: OnItemClick, private var list: ArrayList<DateEvents>) : RecyclerView.Adapter<MainAdapter.ViewHolder>() {
+class MainAdapter(val listener: OnItemClick, private var list: ArrayList<DateEvents>)
+    : RecyclerView.Adapter<MainAdapter.ViewHolder>(), SingleDateAdapter.OnItemClick
+{
 
     interface OnItemClick{
         fun onCreateClick(date: Int)
+        fun itemClicked(event: Event)
     }
 
     fun updateData(l: ArrayList<DateEvents>){
@@ -37,8 +41,9 @@ class MainAdapter(val listener: OnItemClick, private var list: ArrayList<DateEve
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.addButton.setOnClickListener { listener.onCreateClick(list[position].date) }
         "${list[position].date%100}".also { holder.dateTextView.text = it }
-        holder.rv.adapter = SingleDateAdapter(list[position].events)
+        holder.rv.adapter = SingleDateAdapter(list[position].events,this)
     }
 
     override fun getItemCount() = list.size
+    override fun itemClicked(event: Event) = listener.itemClicked(event)
 }

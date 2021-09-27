@@ -8,7 +8,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.calendar.R
 import com.example.calendar.datamodel.Event
 
-class SingleDateAdapter(var list: ArrayList<Event>) : RecyclerView.Adapter<SingleDateAdapter.ViewHolder>() {
+class SingleDateAdapter(
+    var list: ArrayList<Event>,
+    val listener: OnItemClick
+)
+    : RecyclerView.Adapter<SingleDateAdapter.ViewHolder>() {
+
+    interface OnItemClick{
+        fun itemClicked(event: Event)
+    }
 
     inner class ViewHolder(item: View) : RecyclerView.ViewHolder(item){
         val title: TextView = item.findViewById(R.id.tv_title)
@@ -23,6 +31,9 @@ class SingleDateAdapter(var list: ArrayList<Event>) : RecyclerView.Adapter<Singl
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.title.text = list[position].title
         holder.note.text = list[position].note
+        holder.itemView.setOnClickListener {
+            listener.itemClicked(list[position])
+        }
     }
 
     override fun getItemCount(): Int {

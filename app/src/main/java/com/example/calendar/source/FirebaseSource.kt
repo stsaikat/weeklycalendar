@@ -35,6 +35,41 @@ class FirebaseSource(private val user: User,val listener: Update) {
             }
     }
 
+    fun editEvent(event: Event){
+        database.document("${event.date}")
+            .get()
+            .addOnSuccessListener {
+                val dateEvents = it.toObject(DateEvents::class.java)
+                dateEvents?.let { dateE ->
+                    dateE.events.forEach { eve ->
+                        if(eve.id == event.id){
+                            eve.title = event.title
+                            eve.note = event.note
+                            eve.logs = event.logs
+                            database.document("${event.date}").set(dateE)
+                        }
+                    }
+                }
+            }
+            .addOnFailureListener {
+                Log.d("xyz", "edit: failed")
+            }
+    }
+
+    fun deleteEvent(event: Event){
+        database.document("${event.date}")
+            .get()
+            .addOnSuccessListener {
+                val dateEvents = it.toObject(DateEvents::class.java)
+                dateEvents?.let { dateE ->
+                    dateE.events.remove(event)
+                }
+            }
+            .addOnFailureListener {
+                Log.d("xyz", "edit: failed")
+            }
+    }
+
     fun getEvents(date: Int){
         Log.d("TAG", "getEvents: fb called $date")
         database.document("$date")

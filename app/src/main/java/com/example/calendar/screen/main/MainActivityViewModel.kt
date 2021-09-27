@@ -61,61 +61,43 @@ class MainActivityViewModel(val app: Application) : AndroidViewModel(app), Event
                     return@forEach
                 }
             }
+            data.postValue(dataloaderArray)
         }
+    }
 
-        /*val currentMonthDay = getTotalDayInMonth((date/100)%100)
-        val startDateMonthDay = getTotalDayInMonth((startDate/100)%100)
-        val serial = if(currentMonthDay == startDateMonthDay) date - startDate
-                     else{
-                         startDateMonthDay - ((startDate%100)%startDateMonthDay) +
-                         (date%100)%currentMonthDay
-                     }
+    fun editEvent(event: Event){
+        eventRepo.editEvent(event)
 
-        Log.d("xyz", "addEvent: $serial")
-        when(serial){
-            0 -> {
-                firstList.value?.let {
-                    it.add(event)
-                    firstList.postValue(it)
+        data.value?.let {
+            dataloaderArray = it
+            dataloaderArray.forEach { dateEvents ->
+                if(dateEvents.date == event.date){
+                    dateEvents.events.forEach { eve ->
+                        if(eve.id == event.id){
+                            eve.title = event.title
+                            eve.note = event.note
+                            eve.logs = event.logs
+                            return@let
+                        }
+                    }
                 }
             }
-            1 -> {
-                secondList.value?.let {
-                    it.add(event)
-                    secondList.postValue(it)
+        }
+        data.postValue(dataloaderArray)
+    }
+    fun deleteEvent(event: Event){
+        eventRepo.deleteEvent(event)
+
+        data.value?.let {
+            dataloaderArray = it
+            dataloaderArray.forEach { dateEvents ->
+                if(dateEvents.date == event.date){
+                    dateEvents.events.remove(event)
+                    return@let
                 }
             }
-            2 -> {
-                thirdList.value?.let {
-                    it.add(event)
-                    thirdList.postValue(it)
-                }
-            }
-            2+1 -> {
-                fourthList.value?.let {
-                    it.add(event)
-                    fourthList.postValue(it)
-                }
-            }
-            4 -> {
-                fifthList.value?.let {
-                    it.add(event)
-                    fifthList.postValue(it)
-                }
-            }
-            5 -> {
-                sixthList.value?.let {
-                    it.add(event)
-                    sixthList.postValue(it)
-                }
-            }
-            6 -> {
-                seventhList.value?.let {
-                    it.add(event)
-                    seventhList.postValue(it)
-                }
-            }
-        }*/
+        }
+        data.postValue(dataloaderArray)
     }
 
     private fun loadData(){

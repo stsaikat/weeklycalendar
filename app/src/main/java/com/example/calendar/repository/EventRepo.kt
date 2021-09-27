@@ -23,6 +23,14 @@ class EventRepo(private val user: User, val listener: Update) : FirebaseSource.U
         firebaseSource.addEvent(event)
     }
 
+    fun editEvent(event: Event){
+        firebaseSource.editEvent(event)
+    }
+
+    fun deleteEvent(event: Event){
+        firebaseSource.deleteEvent(event)
+    }
+
     override fun failureMessage(message: String) {
         listener.failureMessage(message)
     }
