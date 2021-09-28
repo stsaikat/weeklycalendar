@@ -11,6 +11,8 @@ class LogInViewModel(private val app: Application) : AndroidViewModel(app) {
 
     val user: MutableLiveData<User?> = MutableLiveData(null)
     val toastMessage: MutableLiveData<String?> = MutableLiveData(null)
+
+    // help dialog text to show
     val dialogText: MutableLiveData<String?> = MutableLiveData(null)
 
     private val auth = Firebase.auth
@@ -20,11 +22,9 @@ class LogInViewModel(private val app: Application) : AndroidViewModel(app) {
             !validateUserName(username) ||
             !validatePassword(password)
         ){
-            //toastMessage.postValue("Please enter valid username and password")
             dialogText.postValue("1. Check Network Connection\n2. Check Username\n3. Check Password")
             return
         }
-        // TODO: 24/09/2021
 
         auth.signInWithEmailAndPassword(
             "$username@calendar.com",
@@ -37,9 +37,6 @@ class LogInViewModel(private val app: Application) : AndroidViewModel(app) {
                     }
                 }
                 else {
-/*                    toastMessage.postValue(
-                        "check network or invalid username or password"
-                    )*/
                     dialogText.postValue("1. Check Network Connection\n2. Check Username\n3. Check Password")
                 }
             }
@@ -49,12 +46,10 @@ class LogInViewModel(private val app: Application) : AndroidViewModel(app) {
 
 
         if(!validateUserName(username)){
-            //toastMessage.postValue("1. characters should be between a-z,A-z,0-9")
             dialogText.postValue("characters should be between a-z,A-z,0-9")
             return
         }
         if(!validatePassword(password)){
-            //toastMessage.postValue("Please Enter valid password(min 6 char)")
             dialogText.postValue("1.characters should be between a-z,A-z,0-9\n2.password should be minimum 6 characters")
             return
         }

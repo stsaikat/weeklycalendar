@@ -27,19 +27,13 @@ class MainActivityViewModel(val app: Application) : AndroidViewModel(app), Event
         ), this
     )
 
+    // for temporary use
     private var dataloaderArray:ArrayList<DateEvents> = ArrayList()
+
+    // holds 7 days data
     val data: MutableLiveData<ArrayList<DateEvents>?> = MutableLiveData(null)
 
-/*    val firstList: MutableLiveData<ArrayList<Event>> = MutableLiveData(ArrayList())
-    val secondList: MutableLiveData<ArrayList<Event>> = MutableLiveData(ArrayList())
-    val thirdList: MutableLiveData<ArrayList<Event>> = MutableLiveData(ArrayList())
-    val fourthList: MutableLiveData<ArrayList<Event>> = MutableLiveData(ArrayList())
-    val fifthList: MutableLiveData<ArrayList<Event>> = MutableLiveData(ArrayList())
-    val sixthList: MutableLiveData<ArrayList<Event>> = MutableLiveData(ArrayList())
-    val seventhList: MutableLiveData<ArrayList<Event>> = MutableLiveData(ArrayList())*/
-
     val toastMessage: MutableLiveData<String?> = MutableLiveData(null)
-
 
     @SuppressLint("SimpleDateFormat")
     var startDate = SimpleDateFormat("yyyyMMdd").format(Calendar.getInstance().time).toInt()
@@ -85,6 +79,7 @@ class MainActivityViewModel(val app: Application) : AndroidViewModel(app), Event
         }
         data.postValue(dataloaderArray)
     }
+
     fun deleteEvent(event: Event){
         eventRepo.deleteEvent(event)
 
@@ -104,8 +99,9 @@ class MainActivityViewModel(val app: Application) : AndroidViewModel(app), Event
         dataloaderArray.clear()
 
         val daysInMonth = getTotalDayInMonth((startDate/100)%100)
-        Log.d(TAG, "loadData: days = $daysInMonth || $startDate")
         val day = (startDate%100)
+
+        // calculate next 7 days from start date and call repo to load data
         for (i in 0..6){
             val newDay = day + i
             val newDate = if(newDay > daysInMonth){
@@ -114,7 +110,6 @@ class MainActivityViewModel(val app: Application) : AndroidViewModel(app), Event
             else {
                 startDate + i
             }
-            Log.d("abc", "$i , loadData: $newDate")
             eventRepo.getEventList(newDate)
         }
     }
@@ -125,8 +120,7 @@ class MainActivityViewModel(val app: Application) : AndroidViewModel(app), Event
 
     override fun events(dateEvents: DateEvents) {
 
-        Log.d("abc", "eventsv: $dateEvents")
-
+        // data returned from load data call. when all 7 calls returns push to live data to update ui
         dataloaderArray.add(dateEvents)
         if(dataloaderArray.size == 7){
             dataloaderArray.sortBy {

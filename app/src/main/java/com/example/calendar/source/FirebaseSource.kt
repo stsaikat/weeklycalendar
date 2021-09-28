@@ -31,7 +31,7 @@ class FirebaseSource(private val user: User,val listener: Update) {
                 }
             }
             .addOnFailureListener {
-                Log.d("xyz", "addEvent: failed")
+                // TODO: 28/09/2021 Handle Failure
             }
     }
 
@@ -52,7 +52,7 @@ class FirebaseSource(private val user: User,val listener: Update) {
                 }
             }
             .addOnFailureListener {
-                Log.d("xyz", "edit: failed")
+                // TODO: 28/09/2021 Handle failure
             }
     }
 
@@ -66,7 +66,7 @@ class FirebaseSource(private val user: User,val listener: Update) {
                 }
             }
             .addOnFailureListener {
-                Log.d("xyz", "edit: failed")
+                // TODO: 28/09/2021 Handle failure
             }
     }
 
@@ -84,15 +84,9 @@ class FirebaseSource(private val user: User,val listener: Update) {
                 }
                 listener.events(data)
             }
-/*            .addOnSuccessListener {
-                val dateEvents = it.toObject(DateEvents::class.java)
-                if (dateEvents != null) {
-                    listener.events(dateEvents)
-                }
-            }
-            .addOnFailureListener {
-                // TODO: 26/09/2021
-                listener.events(DateEvents(date))
-            }*/
+    }
+
+    companion object {
+        const val TAG = "FirebaseSource"
     }
 }

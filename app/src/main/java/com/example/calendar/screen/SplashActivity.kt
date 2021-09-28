@@ -27,6 +27,8 @@ class SplashActivity : AppCompatActivity() {
 
         binding.logo.alpha = 0f
         binding.logo.animate().setDuration(500).alpha(1f).withEndAction {
+
+            // if not logged in go to log in otherwise go to main view
             if(auth.currentUser == null){
                 startActivity(
                     Intent(this, LogInActivity::class.java)

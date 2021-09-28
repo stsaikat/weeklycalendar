@@ -50,6 +50,7 @@ class MainActivity : AppCompatActivity(), MainAdapter.OnItemClick {
             User::class.java
         )
 
+        // initial starting date
         viewModel.newStartDate(
             SimpleDateFormat("yyyyMMdd").format(Calendar.getInstance().time).toInt()
         )
@@ -90,6 +91,8 @@ class MainActivity : AppCompatActivity(), MainAdapter.OnItemClick {
         binding.rvMain.adapter = adapter
         binding.rvMain.layoutManager = gridLayoutManager
 
+        // update ui based on data of 7 days
+        // range date calculate and update from 7 days data
         viewModel.data.observe(this,{
             it?.let {
                 var s = "${it[0].date%100} ${getMonthName((it[0].date/100)%100)}"
@@ -137,6 +140,8 @@ class MainActivity : AppCompatActivity(), MainAdapter.OnItemClick {
         binding.pbMainLoading.visibility = View.INVISIBLE
     }
 
+
+    // gives the date of next week start date of the date given
     private fun getNextWeekStartDate(date: Int) : Int{
         val daysInMonth = getTotalDayInMonth((date/100)%100)
         var day = (date%100) + 7
@@ -147,6 +152,7 @@ class MainActivity : AppCompatActivity(), MainAdapter.OnItemClick {
         else date + 7
     }
 
+    // gives the date of previous week start date of the date given
     private fun getPrevWeekStartDate(date: Int) : Int{
         val daysInPrevMonth = getTotalDayInMonth((date/100)%100 - 1)
         var day = (date%100) - 7
@@ -163,6 +169,7 @@ class MainActivity : AppCompatActivity(), MainAdapter.OnItemClick {
         mToast.show()
     }
 
+    // user clicked plus button to create new event
     override fun onCreateClick(date: Int) {
         val dialogBinding = CreateEventDialogLayoutBinding.inflate(layoutInflater)
         val dialog = MaterialAlertDialogBuilder(this)
@@ -188,6 +195,7 @@ class MainActivity : AppCompatActivity(), MainAdapter.OnItemClick {
         }
     }
 
+    // user clicked on an event
     override fun itemClicked(event: Event) {
         val dialogBinding = EditEventDialogLayoutBinding.inflate(layoutInflater)
         val dialog = MaterialAlertDialogBuilder(this)

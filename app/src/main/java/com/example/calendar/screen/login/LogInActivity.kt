@@ -30,14 +30,6 @@ class LogInActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityLogInBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-/*        // auto log in
-        Firebase.auth.currentUser?.let {
-            viewModel.user.postValue(
-                User(it.uid)
-            )
-        }
-        // -----------*/
         
         viewModel.toastMessage.observe(this,{
             showResultView()
